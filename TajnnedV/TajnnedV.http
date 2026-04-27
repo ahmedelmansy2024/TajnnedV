@@ -1,0 +1,6 @@
+@TajnnedV_HostAddress = http://localhost:5174
+
+GET {{TajnnedV_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
