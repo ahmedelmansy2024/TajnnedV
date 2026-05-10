@@ -1,3 +1,7 @@
 <Solution>
-  <Project Path="TajnnedV/TajnnedV.csproj" />
+  <Project Path="Tajnned.Application/Tajnned.Application.csproj" />
+  <Project Path="Tajnned.Domain/Tajnned.Domain.csproj" />
+  <Project Path="Tajnned.Infrastructure/Tajnned.Infrastructure.csproj" />
+  <Project Path="TajnnedV/Tajnned.Api.csproj" />
+  <Project Path="Ui/Tajnned.UI.csproj" />
 </Solution>
