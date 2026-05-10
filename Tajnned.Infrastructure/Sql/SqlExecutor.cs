@@ -34,9 +34,9 @@ namespace Tajnned.Infrastructure.Sql
             params SqlParameter[] parameters
         ) where T : class
         {
-            return await _context.Database
-                .SqlQueryRaw<T>(sql, parameters).FirstOrDefaultAsync();
-             //.SqlQueryRaw<T>(sql, parameters).AsEnumerable().FirstOrDefault();
+            return   _context.Database
+                // .SqlQueryRaw<T>(sql, parameters).FirstOrDefaultAsync();
+            .SqlQueryRaw<T>(sql, parameters).AsEnumerable().FirstOrDefault();
 
         }
 

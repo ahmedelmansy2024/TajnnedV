@@ -74,7 +74,7 @@ c.SwaggerDoc("v1",
 //   .Enrich.FromLogContext()
 //   .CreateLogger();
 
-builder.Host.UseSerilog();
+//builder.Host.UseSerilog();
 
 var app = builder.Build();
 
