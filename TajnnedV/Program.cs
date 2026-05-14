@@ -4,12 +4,14 @@ using Hangfire.Logging;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi;
 using Serilog;
 using System.Reflection;
 using System.Text;
 using Tajnned.Api.Middlewares;
 using Tajnned.Domain.Models;
 using Tajnned.Infrastructure.DependencyInjection;
+ 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -39,8 +41,38 @@ builder.Services.AddMediatR(cfg =>
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddAuthentication(options =>
-{
+
+
+
+
+//builder.Services
+//    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+//    .AddJwtBearer(options =>
+//    {
+//        options.TokenValidationParameters =
+//            new TokenValidationParameters
+//            {
+//                ValidateIssuer = true,
+//                ValidateAudience = true,
+//                ValidateLifetime = true,
+//                ValidateIssuerSigningKey = true,
+
+//                ValidIssuer = builder.Configuration["Jwt:Issuer"],
+//                ValidAudience = builder.Configuration["Jwt:Audience"],
+
+//                IssuerSigningKey =
+//                    new SymmetricSecurityKey(
+//                        Encoding.UTF8.GetBytes(
+//                            builder.Configuration["Jwt:Key"]!))
+//            };
+//    });
+
+//builder.Services.AddAuthorization();
+
+
+
+
+builder.Services.AddAuthentication(options =>{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -59,11 +91,39 @@ builder.Services.AddAuthentication(options =>
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JWT:Key"]))
                    };
                });
-builder.Services.AddSwaggerGen(c => {
-c.SwaggerDoc("v1", 
-    new Microsoft.OpenApi.OpenApiInfo { Title = "My API", Version = "v1" }); 
- 
-  });
+
+
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new() { Title = "API", Version = "v1" });
+
+    //   JWT  
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Name = "Authorization",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header
+    });
+
+    //    c.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
+    //{
+    //    {
+    //        new OpenApiSecuritySchemeReference("Bearer", null, null),
+    //        new List<string>()
+    //    }
+    //});
+
+
+
+
+});
+
+
 //   Serilog Setup
 //Log.Logger = new LoggerConfiguration()
 //   .MinimumLevel.Information()
@@ -83,6 +143,8 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger(); 
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1"));
+
+
      app.MapOpenApi();
      //app.UseMiddleware<ExceptionHandlingMiddleware>();
 
@@ -98,7 +160,6 @@ app.UseHttpsRedirection();
 //});
 app.UseAuthentication();
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
