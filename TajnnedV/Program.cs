@@ -3,6 +3,7 @@ using Hangfire;
 using Hangfire.Logging;
 using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi;
 using Serilog;
@@ -11,7 +12,7 @@ using System.Text;
 using Tajnned.Api.Middlewares;
 using Tajnned.Domain.Models;
 using Tajnned.Infrastructure.DependencyInjection;
- 
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -42,37 +43,8 @@ builder.Services.AddMediatR(cfg =>
 builder.Services.AddOpenApi();
 builder.Services.AddEndpointsApiExplorer();
 
-
-
-
-//builder.Services
-//    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-//    .AddJwtBearer(options =>
-//    {
-//        options.TokenValidationParameters =
-//            new TokenValidationParameters
-//            {
-//                ValidateIssuer = true,
-//                ValidateAudience = true,
-//                ValidateLifetime = true,
-//                ValidateIssuerSigningKey = true,
-
-//                ValidIssuer = builder.Configuration["Jwt:Issuer"],
-//                ValidAudience = builder.Configuration["Jwt:Audience"],
-
-//                IssuerSigningKey =
-//                    new SymmetricSecurityKey(
-//                        Encoding.UTF8.GetBytes(
-//                            builder.Configuration["Jwt:Key"]!))
-//            };
-//    });
-
-//builder.Services.AddAuthorization();
-
-
-
-
-builder.Services.AddAuthentication(options =>{
+builder.Services.AddAuthentication(options =>
+{
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
 })
@@ -99,8 +71,6 @@ builder.Services.AddAuthorization();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new() { Title = "API", Version = "v1" });
-
-    //   JWT  
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
@@ -109,17 +79,7 @@ builder.Services.AddSwaggerGen(c =>
         BearerFormat = "JWT",
         In = ParameterLocation.Header
     });
-
-    //    c.AddSecurityRequirement(_ => new OpenApiSecurityRequirement
-    //{
-    //    {
-    //        new OpenApiSecuritySchemeReference("Bearer", null, null),
-    //        new List<string>()
-    //    }
-    //});
-
-
-
+    c.AddSecurityRequirement(document => new() { [new OpenApiSecuritySchemeReference("Bearer", document)] = [] });
 
 });
 
@@ -141,12 +101,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger(); 
+    app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API v1"));
 
 
-     app.MapOpenApi();
-     //app.UseMiddleware<ExceptionHandlingMiddleware>();
+    app.MapOpenApi();
+    //app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 }
 app.UseHangfireDashboard("/hangfire");
