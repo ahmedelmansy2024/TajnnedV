@@ -10,6 +10,7 @@ using Tajnned.Application.Interfaces.Hangfire;
 using Tajnned.Application.Interfaces.Services;
 using Tajnned.Application.Interfaces.Sql;
 using Tajnned.Domain.Interfaces.Repositories;
+using Tajnned.Domain.Models;
 using Tajnned.Infrastructure.Auth;
 using Tajnned.Infrastructure.BackgroundJobs;
 using Tajnned.Infrastructure.Data;
@@ -24,17 +25,14 @@ namespace Tajnned.Infrastructure.DependencyInjection
         {
             services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("Default")));
-
+            services.Configure<JWT>(configuration.GetSection("JWT"));
+          
             services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-             
+
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<ISqlExecutor, SqlExecutor>();
-             services.AddScoped<IJobService, JobService>();
-
-
-
-
+            services.AddScoped<IJobService, JobService>();
 
             return services;
         }
