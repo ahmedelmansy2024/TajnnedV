@@ -7,7 +7,7 @@ using Tajnned.Application.user.Model;
 namespace Tajnned.Api.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    //[Route("[controller]")]
     public class UserController : ControllerBase
     {
 
