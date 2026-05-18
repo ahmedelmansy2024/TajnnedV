@@ -1,4 +1,4 @@
-﻿namespace Tajnned.Api.Controllers.Middlewares
+﻿namespace Tajnned.Api.Middlewares
 {
     using Serilog;
     using System.Net;
