@@ -11,6 +11,10 @@ namespace Tajnned.Application.Interfaces.Sql
             string sql,
             params SqlParameter[] parameters
         ) where T : class;
+        Task<List<T>> QueryMultipleAsync<T>(
+         string sql,
+         params SqlParameter[] parameters
+     ) where T : class;
 
         Task<T?> QuerySingleAsync<T>(
             string sql,

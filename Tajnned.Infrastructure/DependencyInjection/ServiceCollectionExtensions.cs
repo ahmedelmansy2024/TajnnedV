@@ -6,6 +6,7 @@ using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Tajnned.Application.Interfaces.Dapper;
 using Tajnned.Application.Interfaces.Hangfire;
 using Tajnned.Application.Interfaces.Services;
 using Tajnned.Application.Interfaces.Sql;
@@ -13,6 +14,7 @@ using Tajnned.Domain.Interfaces.Repositories;
 using Tajnned.Domain.Models;
 using Tajnned.Infrastructure.Auth;
 using Tajnned.Infrastructure.BackgroundJobs;
+using Tajnned.Infrastructure.Dapper;
 using Tajnned.Infrastructure.Data;
 using Tajnned.Infrastructure.Repositories;
 using Tajnned.Infrastructure.Sql;
@@ -32,6 +34,7 @@ namespace Tajnned.Infrastructure.DependencyInjection
 
             services.AddScoped<IUserManagementService, UserManagementService>();
             services.AddScoped<ISqlExecutor, SqlExecutor>();
+            services.AddScoped<IDapperExecutor, DapperExecutor>();
             services.AddScoped<IJobService, JobService>();
 
             return services;

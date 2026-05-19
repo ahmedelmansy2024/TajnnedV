@@ -41,6 +41,8 @@ namespace Tajnned.Infrastructure.Sql
 
         }
 
+
+      
         // INSERT / UPDATE / DELETE
         public async Task<int> ExecuteAsync(
             string sql,
@@ -49,6 +51,16 @@ namespace Tajnned.Infrastructure.Sql
         {
             return await _context.Database
                 .ExecuteSqlRawAsync(sql, parameters);
+        }
+
+        public async Task<List<T>> QueryMultipleAsync<T>(string sql, params SqlParameter[] parameters) where T : class
+        {
+         var x =   await  _context.Set<T>().FromSqlRaw(sql, parameters).ToListAsync();
+            return await _context.Set<T>().FromSqlRaw(sql, parameters).ToListAsync();   
+            //  => await _entitySet.FromSqlRaw(sql, parameters).ToListAsync();
+
+            // _entitySet.Set<LMS_SurveyTraineeViewModel>().FromSql("LMSSP_GetTraineeSurvey @surveyID = {0},@LanguageID = {1}", surveyID, AppTenant.SelectedLanguageID).ToList();
+
         }
     }
     //public class SqlExecutor : ISqlExecutor

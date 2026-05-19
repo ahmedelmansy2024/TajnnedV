@@ -20,7 +20,7 @@ namespace Tajnned.Domain.Common
         {
 
         }
-       
+      
         private static int GetAgeFromHijryDate(string hijriDate)
         {
             try
