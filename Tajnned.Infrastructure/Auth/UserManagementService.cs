@@ -17,6 +17,7 @@ using Tajnned.Application.Interfaces.Sql;
 using Tajnned.Domain.Common;
 using Tajnned.Domain.Interfaces.Repositories;
 using Tajnned.Domain.Models;
+using Tajnned.Infrastructure.Dapper;
 using Tajnned.Infrastructure.Data.Entities;
 
 namespace Tajnned.Infrastructure.Auth
@@ -63,8 +64,11 @@ namespace Tajnned.Infrastructure.Auth
                 parameters.Add("@Username", request.Username);
                 parameters.Add("@Password", request.Password);
 
+
+                var parameter = request.ToDynamicParams();
+
                 var testdappersingelparm = _dapperExecutor.QuerySingle<usertest>("sp_Logintest",
-                  parameters);
+                  parameter);
 
                 var testdappersingel = _dapperExecutor.QuerySingle<usertest>("sp_Logintest",
                     new { Username = request.Username, Password = request.Password });
