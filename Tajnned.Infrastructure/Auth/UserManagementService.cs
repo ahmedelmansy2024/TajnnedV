@@ -1,10 +1,12 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Dapper;
+using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Data;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -45,6 +47,25 @@ namespace Tajnned.Infrastructure.Auth
             {
 
                 #region Dapper
+
+
+
+                //var parameters = new DynamicParameters();
+
+                //parameters.Add("@Username", request.Username);
+                //parameters.Add("@Password", request.Password);
+
+                //parameters.Add("@Ids",
+                //    ids.ToTvp("dbo.IdListTVP"));
+
+                var parameters = new DynamicParameters();
+
+                parameters.Add("@Username", request.Username);
+                parameters.Add("@Password", request.Password);
+
+                var testdappersingelparm = _dapperExecutor.QuerySingle<usertest>("sp_Logintest",
+                  parameters);
+
                 var testdappersingel = _dapperExecutor.QuerySingle<usertest>("sp_Logintest",
                     new { Username = request.Username, Password = request.Password });
 
