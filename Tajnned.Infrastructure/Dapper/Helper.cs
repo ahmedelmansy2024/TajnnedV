@@ -3,6 +3,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Data;
+using System.Reflection;
 using System.Text;
 
 namespace Tajnned.Infrastructure.Dapper
@@ -147,7 +148,61 @@ namespace Tajnned.Infrastructure.Dapper
 
             return table.AsTableValuedParameter(tvpTypeName);
         }
+        public static SqlMapper.ICustomQueryParameter ToTvp<T>(
+        this IEnumerable<T> values,
+        string tvpTypeName,
+        params string[] columnOrder)
+        {
+            var table = new DataTable();
 
+            var props = typeof(T).GetProperties()
+                .ToDictionary(x => x.Name, x => x);
+
+            foreach (var col in columnOrder)
+            {
+                var prop = props[col];
+                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                table.Columns.Add(col, type);
+            }
+
+            foreach (var item in values)
+            {
+                var row = table.NewRow();
+
+                foreach (var col in columnOrder)
+                    row[col] = props[col].GetValue(item) ?? DBNull.Value;
+
+                table.Rows.Add(row);
+            }
+
+            return table.AsTableValuedParameter(tvpTypeName);
+        }
+        public static SqlMapper.ICustomQueryParameter ListToTvp<T>(
+       this IEnumerable<T> values,
+       string tvpTypeName)
+        {
+            var table = new DataTable();
+
+            var props = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            foreach (var prop in props)
+            {
+                var type = Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType;
+                table.Columns.Add(prop.Name, type);
+            }
+
+            foreach (var item in values)
+            {
+                var row = table.NewRow();
+
+                foreach (var prop in props)
+                    row[prop.Name] = prop.GetValue(item) ?? DBNull.Value;
+
+                table.Rows.Add(row);
+            }
+
+            return table.AsTableValuedParameter(tvpTypeName);
+        }
     }
 
 

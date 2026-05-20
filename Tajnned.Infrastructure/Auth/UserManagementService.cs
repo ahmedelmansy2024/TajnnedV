@@ -4,6 +4,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Data;
@@ -59,6 +60,9 @@ namespace Tajnned.Infrastructure.Auth
                 //parameters.Add("@Ids",
                 //    ids.ToTvp("dbo.IdListTVP"));
 
+
+                //var param = new DynamicParameters();
+                //param.Add("@Citizens", list.ListToTvp("dbo.CitizenType"));
                 var parameters = new DynamicParameters();
 
                 parameters.Add("@Username", request.Username);
@@ -66,7 +70,7 @@ namespace Tajnned.Infrastructure.Auth
 
 
                 var parameter = request.ToDynamicParams();
-
+                var parameterrr = request.ToDynamicParam();
                 var testdappersingelparm = _dapperExecutor.QuerySingle<usertest>("sp_Logintest",
                   parameter);
 
